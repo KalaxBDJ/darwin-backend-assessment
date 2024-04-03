@@ -4,6 +4,28 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//Swagger
+const swaggerJsdoc = require("swagger-jsdoc"),
+swaggerUi = require("swagger-ui-express");
+
+const options = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "Backend tech assessment",
+      version: "0.1.0",
+      description:
+        "Documentation for backend tech assessment Santiago Salazar",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
 var indexRouter = require('./routes/index');
 
 var app = express();
@@ -14,6 +36,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', indexRouter);
+
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
