@@ -4,6 +4,13 @@ const { getMovies } = require('../controllers/movies')
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
+  res.status(200).json({
+    status: "ok",
+    message: "This is the index route"
+  });
+});
+
+router.get('/movies', async function (req, res, next) {
   try {
     const movies = await getMovies();
     // Send the movies as a JSON response
