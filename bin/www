@@ -9,6 +9,7 @@ var debug = require('debug')('backend-assessment:server');
 var http = require('http');
 
 const sql = require('../services/db')
+const { loggerWinston, requestLogger } = require('../utils/logger');
 
 /**
  * Get port from environment and store in Express.
@@ -68,10 +69,12 @@ function onError(error) {
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
+      loggerWinston.error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
+      loggerWinston.error(bind + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -89,6 +92,7 @@ async function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
+  loggerWinston.info('Listening on ' + bind);
 
   try {
     // Execute a simple query to check if the database is responsive
