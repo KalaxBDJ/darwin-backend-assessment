@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('backend-assessment:server');
 var http = require('http');
 
+const sql = require('../services/db')
+
 /**
  * Get port from environment and store in Express.
  */
@@ -81,10 +83,19 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+async function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
+
+  try {
+    // Execute a simple query to check if the database is responsive
+    await sql`SELECT 1`;
+    console.log('Connection to PostgreSQL database successful.');
+  } catch (error) {
+    // If an error occurs, throw an error
+    throw new Error('Failed to connect to PostgreSQL database: ' + error.message);
+  }
 }
